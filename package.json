@@ -14,8 +14,9 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
     "clean": "rm -rf dist coverage",
-    "ci": "npm run lint && npm run test"
+    "ci": "yarn type-check && yarn lint && yarn test"
   },
   "keywords": [
     "typescript",

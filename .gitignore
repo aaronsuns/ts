@@ -8,4 +8,5 @@ coverage/
 *.swo
 *~
 .npm-cache/
+package-lock.json
 

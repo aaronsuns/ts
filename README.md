@@ -36,19 +36,23 @@ A modern TypeScript REST API server following best practices with clean architec
 ## Prerequisites
 
 - Node.js 18 or later
-- npm or yarn
+- Yarn (recommended) or npm
 
 ## Quick Start
 
 ### Install Dependencies
 
 ```bash
+yarn install
+# or
 npm install
 ```
 
 ### Run the Server (Development)
 
 ```bash
+yarn dev
+# or
 npm run dev
 ```
 
@@ -57,46 +61,68 @@ The server will start on `http://localhost:8080` by default.
 ### Build the Application
 
 ```bash
+yarn build
+# or
 npm run build
 ```
 
 ### Run the Server (Production)
 
 ```bash
+yarn start
+# or
 npm start
 ```
 
 ### Run Tests
 
 ```bash
+yarn test
+# or
 npm test
 ```
 
 ### Run Tests with Coverage
 
 ```bash
+yarn test:coverage
+# or
 npm run test:coverage
+```
+
+### Type Check
+
+```bash
+yarn type-check
+# or
+npm run type-check
 ```
 
 ### Run Linter
 
 ```bash
+yarn lint
+# or
 npm run lint
 ```
 
 ### Format Code
 
 ```bash
+yarn format
+# or
 npm run format
 ```
 
 ### Run CI Checks
 
 ```bash
+yarn ci
+# or
 npm run ci
 ```
 
-This runs both linting and tests.
+This runs type-check, linting, and tests.
 
 ## API Endpoints
 
@@ -151,18 +177,21 @@ DELETE /api/v1/users/:id
 
 ## Available Scripts
 
-- `npm run build` - Build the TypeScript project
-- `npm start` - Run the built application
-- `npm run dev` - Run the application in development mode with hot reload
-- `npm test` - Run tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Run tests with coverage report
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Run ESLint with auto-fix
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check code formatting
-- `npm run clean` - Clean build artifacts and coverage
-- `npm run ci` - Run CI checks (lint + test)
+- `yarn build` - Build the TypeScript project
+- `yarn start` - Run the built application
+- `yarn dev` - Run the application in development mode with hot reload
+- `yarn test` - Run tests
+- `yarn test:watch` - Run tests in watch mode
+- `yarn test:coverage` - Run tests with coverage report
+- `yarn type-check` - Type check without emitting files
+- `yarn lint` - Run ESLint
+- `yarn lint:fix` - Run ESLint with auto-fix
+- `yarn format` - Format code with Prettier
+- `yarn format:check` - Check code formatting
+- `yarn clean` - Clean build artifacts and coverage
+- `yarn ci` - Run CI checks (type-check + lint + test)
+
+Replace `yarn` with `npm run` if using npm.
 
 ## Development
 
@@ -171,8 +200,8 @@ DELETE /api/v1/users/:id
 - Follow TypeScript best practices
 - Use ESLint for code quality
 - Use Prettier for code formatting
-- Run `npm run format` before committing
-- Ensure `npm run lint` passes
+- Run `yarn format` before committing
+- Ensure `yarn lint` and `yarn type-check` pass
 - Write tests for new features
 
 ### Testing
