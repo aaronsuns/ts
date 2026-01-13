@@ -1,17 +1,27 @@
 import { Request, Response } from 'express';
-import { User, UserRequest } from '../models/user';
+import { UserRequest } from '../models/user';
+import { UserRepository } from '../repositories/userRepository';
 
 export class UserHandler {
-  private users: User[] = [];
-  private nextId = 1;
+  private userRepository: UserRepository;
 
-  getUsers(_req: Request, res: Response): void {
-    res.status(200).json({
-      data: this.users,
-    });
+  constructor() {
+    this.userRepository = new UserRepository();
   }
 
-  getUser(req: Request, res: Response): void {
+  async getUsers(_req: Request, res: Response): Promise<void> {
+    try {
+      const users = await this.userRepository.findAll();
+      res.status(200).json({
+        data: users,
+      });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  }
+
+  async getUser(req: Request, res: Response): Promise<void> {
     const id = parseInt(req.params.id, 10);
 
     if (isNaN(id)) {
@@ -19,17 +29,22 @@ export class UserHandler {
       return;
     }
 
-    const user = this.users.find((u) => u.id === id);
+    try {
+      const user = await this.userRepository.findById(id);
 
-    if (!user) {
-      res.status(404).json({ error: 'User not found' });
-      return;
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+
+      res.status(200).json({ data: user });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ error: 'Failed to fetch user' });
     }
-
-    res.status(200).json({ data: user });
   }
 
-  createUser(req: Request, res: Response): void {
+  async createUser(req: Request, res: Response): Promise<void> {
     const userReq: UserRequest = req.body;
 
     // Validation
@@ -50,18 +65,30 @@ export class UserHandler {
       return;
     }
 
-    const user: User = {
-      id: this.nextId++,
-      name: userReq.name,
-      email: userReq.email,
-    };
+    try {
+      // Check if email already exists
+      const existingUser = await this.userRepository.findByEmail(userReq.email);
+      if (existingUser) {
+        res.status(409).json({ error: 'Email already exists' });
+        return;
+      }
 
-    this.users.push(user);
+      const user = await this.userRepository.create(userReq);
+      res.status(201).json({ data: user });
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      
+      // Handle unique constraint violation
+      if (error.code === '23505') {
+        res.status(409).json({ error: 'Email already exists' });
+        return;
+      }
 
-    res.status(201).json({ data: user });
+      res.status(500).json({ error: 'Failed to create user' });
+    }
   }
 
-  deleteUser(req: Request, res: Response): void {
+  async deleteUser(req: Request, res: Response): Promise<void> {
     const id = parseInt(req.params.id, 10);
 
     if (isNaN(id)) {
@@ -69,15 +96,18 @@ export class UserHandler {
       return;
     }
 
-    const index = this.users.findIndex((u) => u.id === id);
+    try {
+      const deleted = await this.userRepository.delete(id);
 
-    if (index === -1) {
-      res.status(404).json({ error: 'User not found' });
-      return;
+      if (!deleted) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+
+      res.status(200).json({ message: 'User deleted' });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: 'Failed to delete user' });
     }
-
-    this.users.splice(index, 1);
-
-    res.status(200).json({ message: 'User deleted' });
   }
 }

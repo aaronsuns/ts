@@ -1,5 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { setupRoutes } from '../../internal/routes/routes';
+import { testConnection, closePool } from '../../internal/database/connection';
+import { runMigrations } from '../../internal/database/migrations';
 
 const app: Express = express();
 
@@ -38,28 +40,46 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 const port = process.env.PORT || '8080';
 const env = process.env.ENV || 'development';
 
-// Create HTTP server
-const server = app.listen(port, () => {
-  console.log(`Server starting on port ${port} (${env} mode)`);
-});
+// Initialize database and start server
+async function startServer() {
+  try {
+    // Test database connection
+    await testConnection();
+    
+    // Run database migrations (create tables)
+    await runMigrations();
+    
+    // Create HTTP server
+    const server = app.listen(port, () => {
+      console.log(`Server starting on port ${port} (${env} mode)`);
+    });
 
-// Graceful shutdown
-const shutdown = (signal: string) => {
-  console.log(`Received ${signal}, shutting down server...`);
+    // Graceful shutdown
+    const shutdown = (signal: string) => {
+      console.log(`Received ${signal}, shutting down server...`);
 
-  server.close(() => {
-    console.log('Server exited');
-    process.exit(0);
-  });
+      server.close(async () => {
+        await closePool();
+        console.log('Server exited');
+        process.exit(0);
+      });
 
-  // Force shutdown after 5 seconds
-  setTimeout(() => {
-    console.error('Forced shutdown after timeout');
+      // Force shutdown after 5 seconds
+      setTimeout(() => {
+        console.error('Forced shutdown after timeout');
+        process.exit(1);
+      }, 5000);
+    };
+
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+  } catch (error) {
+    console.error('Failed to start server:', error);
     process.exit(1);
-  }, 5000);
-};
+  }
+}
 
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
+// Start the server
+startServer();
 
 export default app;
