@@ -22,8 +22,19 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Drop trigger if it exists, then create it
-DROP TRIGGER IF EXISTS update_users_updated_at ON users;
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Create trigger only if it doesn't exist
+-- PostgreSQL doesn't support CREATE TRIGGER IF NOT EXISTS,
+-- so we use a DO block to check first
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_trigger 
+        WHERE tgname = 'update_users_updated_at'
+    ) THEN
+        CREATE TRIGGER update_users_updated_at 
+        BEFORE UPDATE ON users
+        FOR EACH ROW 
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+END $$;
 
