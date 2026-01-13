@@ -8,15 +8,10 @@ Open a terminal and navigate to the frontend directory:
 
 ```bash
 cd frontend
-npm install
-```
-
-Or if you're using yarn:
-
-```bash
-cd frontend
 yarn install
 ```
+
+**Note:** We use `yarn` for consistency with the backend. If you don't have yarn installed, you can install it with `npm install -g yarn`.
 
 ### 2. Start Your Backend Server
 
@@ -35,12 +30,6 @@ In the **frontend directory**, start the development server:
 
 ```bash
 # Make sure you're in the frontend/ directory
-npm run dev
-```
-
-Or with yarn:
-
-```bash
 yarn dev
 ```
 
@@ -77,7 +66,8 @@ You should see the User Management interface!
 
 **Can't install packages:**
 - Make sure you have Node.js installed (version 16 or higher)
-- Try deleting `node_modules` and `package-lock.json` (or `yarn.lock`) and installing again
+- Make sure you have yarn installed: `npm install -g yarn`
+- Try deleting `node_modules` and `yarn.lock` and running `yarn install` again
 
 ## Next Steps
 

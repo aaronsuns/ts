@@ -82,10 +82,10 @@ Navigate to the frontend directory and install packages:
 
 ```bash
 cd frontend
-npm install
-# or
 yarn install
 ```
+
+**Note:** We use `yarn` for consistency with the backend.
 
 ### 2. Start the Development Server
 
@@ -100,8 +100,6 @@ Then start the React frontend:
 
 ```bash
 # In the frontend directory
-npm run dev
-# or
 yarn dev
 ```
 
@@ -110,8 +108,6 @@ The frontend will run on `http://localhost:3000`
 ### 3. Build for Production
 
 ```bash
-npm run build
-# or
 yarn build
 ```
 
