@@ -1,0 +1,7 @@
+# Cursor Rules
+
+## Context7 Auto-Invoke Rule
+
+Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
+
+This ensures that Context7 automatically fetches up-to-date, version-specific documentation and code examples directly into the context, avoiding outdated examples and hallucinated APIs.
